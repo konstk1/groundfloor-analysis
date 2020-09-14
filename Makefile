@@ -9,7 +9,7 @@ INCLUDE = $(addprefix -I,$(INC_DIRS))
 
 LDFLAGS := 
 CXXFLAGS := -MMD -std=c++17
-CXX := g++-9
+CXX := c++
 
 # Echo suspend
 ifeq ("$(VERBOSE)","1")
