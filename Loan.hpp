@@ -32,7 +32,11 @@ struct Date {
         }
     }
 
-    int DaysSince(Date &date) {
+    bool IsValid() const {
+        return year > 1900;
+    };
+
+    int DaysSince(Date &date) const {
         struct tm start = {0, 0, 0, date.day, date.mon - 1, date.year - 1900};
         struct tm end = {0, 0, 0, day, mon - 1, year - 1900};
 
@@ -60,11 +64,36 @@ struct Date {
     int mon = 0;    // month
     int day = 0;    // day
     int year = 0;   // year
-
-private:
-    static constexpr int YEAR_0 = 2000;     // TODO count leap years
-
 };
+
+std::ostream &operator<<(std::ostream &os, Date const &d);
+
+inline bool operator==(const Date& lhs, const Date& rhs) { 
+    return (lhs.year == rhs.year) && (lhs.mon == rhs.mon) && (lhs.day == rhs.day);
+}
+
+inline bool operator!=(const Date& lhs, const Date& rhs) {
+    return !operator==(lhs,rhs);
+}
+
+inline bool operator< (const Date& lhs, const Date& rhs) {
+    if (lhs.year < rhs.year) return true;
+    if (lhs.year == rhs.year && lhs.mon < rhs.mon) return true;
+    if (lhs.year == rhs.year && lhs.mon == rhs.mon && lhs.day < rhs.day) return true;
+    return false; 
+}
+
+inline bool operator> (const Date& lhs, const Date& rhs){
+    return  operator< (rhs,lhs);
+}
+
+inline bool operator<=(const Date& lhs, const Date& rhs) {
+    return !operator> (lhs,rhs);
+}
+
+inline bool operator>=(const Date& lhs, const Date& rhs) {
+    return !operator< (lhs,rhs);
+}
 
 struct Address {
     Address() = default;
@@ -73,6 +102,13 @@ struct Address {
     std::string city;
     std::string state;
     std::string zipcode;
+};
+
+struct Transaction {
+    std::string id;
+    std::string loan; // title
+    Date date;
+    float amount{0};
 };
 
 struct Loan {
@@ -113,7 +149,19 @@ struct Loan {
     Date maturityDate;
     Date repaidDate;
 
-    void Print() {
+    bool IsRepaid() const {
+        return repaidDate.IsValid();
+    }
+
+    float ReturnNet() const {
+        return repaidDate.IsValid() ? repaidAmount - purchasedAmount : 0.0;
+    };
+
+    float ReturnPct() const {
+        return ReturnNet() / purchasedAmount * 100.0;
+    };
+
+    void Print() const {
         std::cout << "Loan: " << title << std::endl;
         std::cout << address.street << ", " << address.city << ", " << address.state << ", " << address.zipcode << std::endl;
         std::cout << "Grade: " << grade << ", Term: " << term << ", Rate: " << rate << "%, ARV: " << arvPct << "%" << std::endl;
@@ -125,7 +173,18 @@ struct Loan {
     std::vector<Loan> CalendarYearSplit() {
         return std::vector<Loan>{};
     };
-};
 
+    std::vector<Transaction> GetTransactions() const {
+        std::vector<Transaction> transactions;
+
+        transactions.push_back(Transaction{id, title, purchasedDate, 0-purchasedAmount}); // purchase is negative transaction
+
+        if (repaidDate.IsValid()) {
+            transactions.push_back(Transaction{id, title, repaidDate, repaidAmount});       // repaid is positive transaction
+        }
+        
+        return transactions;
+    };
+};
 
 #endif

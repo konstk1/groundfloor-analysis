@@ -16,7 +16,7 @@ public:
         std::cout << "Loaded " << numLoans << " loans (total " << mLoans.size() << ")" << std::endl;
     };
 
-    void GenerateXirrFile(const std::string &path);
+    void GenerateXirrFile(const std::string &filePath);
 
     void CalendarYearSplit();
     void AddLoan(const Loan &loan);

@@ -37,5 +37,7 @@ int main() {
 
     p.LoansByYear();
 
+    p.GenerateXirrFile("xirr.csv");
+
     return 0;
 }

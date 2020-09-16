@@ -147,7 +147,7 @@ int GfParser::LoadFromCsv(const std::string &filePath, std::vector<Loan> &loans)
     std::ifstream fin(filePath);
 
     if (!fin.is_open()) {
-        throw std::runtime_error("Failed to open file: " + filePath);
+        throw std::runtime_error("Failed to open file (r): " + filePath);
     }
 
     std::string line, colName;
