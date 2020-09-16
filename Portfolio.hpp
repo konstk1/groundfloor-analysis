@@ -4,20 +4,27 @@
 #include <string>
 #include <vector>
 
+#include "GfParser.hpp"
 #include "Loan.hpp"
 
 class Portfolio {
 public:
     Portfolio() = default;
+    Portfolio(std::vector<Loan> &&loans): mLoans(std::move(loans)) {};
+    Portfolio(GfParser parser) {
+        int numLoans = parser.LoadFromCsv(mLoans);
+        std::cout << "Loaded " << numLoans << " loans (total " << mLoans.size() << ")" << std::endl;
+    };
 
-    void LoadFromCsv(const std::string &path);
     void GenerateXirrFile(const std::string &path);
 
     void CalendarYearSplit();
     void AddLoan(const Loan &loan);
     void RemoveLoan(const std::string &id);
+
+    void LoansByYear();
 private:
-    std::vector<Loan> loans{};
+    std::vector<Loan> mLoans{};
 };
 
 #endif

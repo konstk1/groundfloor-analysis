@@ -68,6 +68,8 @@
         "map": "cpp"
     },
     "cSpell.words": [
-        "Xirr"
+        "Xirr",
+        "stof",
+        "stoi"
     ]
 }

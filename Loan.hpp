@@ -28,7 +28,7 @@ struct Date {
             day < 1 || day > 31 ||
             year < 2000) {
             std::cerr << "Invalid date: " << date << std::endl;
-            throw std::runtime_error("Invalid date format");
+            throw std::invalid_argument("Invalid date format");
         }
     }
 
@@ -41,17 +41,19 @@ struct Date {
 
         if (s == static_cast<time_t>(-1) || e == static_cast<time_t>(-1)) {
             std::cerr << "Invalid date";
-            throw std::runtime_error("Invalid date");
+            throw std::invalid_argument("Invalid date");
         }
 
         double diffSec = std::difftime(e, s);
         return diffSec / (60 * 60 * 24);
     }
 
-    std::string AsString() {
+    std::string AsString() const {
         std::ostringstream os;
 
-        os << mon << "/" << day << "/" << year;
+        os << std::setw(2) << std::setfill('0') << mon << "/" 
+           << std::setw(2) << std::setfill('0') << day << "/" 
+           << year;
         return os.str();
     }
 
@@ -88,6 +90,7 @@ struct Loan {
         PERFORMING,
         PERFORMED,
         EXTENDED,
+        REFUNDED,
         DEFAULT,
     };
 
@@ -101,7 +104,7 @@ struct Loan {
     float rate{0};
     int term{0};
     std::string grade;
-    float arv{0};
+    float arvPct{0};
 
     float purchasedAmount{0};
     float repaidAmount{0};
@@ -113,14 +116,14 @@ struct Loan {
     void Print() {
         std::cout << "Loan: " << title << std::endl;
         std::cout << address.street << ", " << address.city << ", " << address.state << ", " << address.zipcode << std::endl;
-        std::cout << "Grade: " << grade << ", Term: " << term << ", Rate: " << rate << "%" << std::endl;
+        std::cout << "Grade: " << grade << ", Term: " << term << ", Rate: " << rate << "%, ARV: " << arvPct << "%" << std::endl;
         std::cout << "Purchased: " << purchasedDate.AsString() << ", Maturity: " << maturityDate.AsString() << ", Repaid: " << repaidDate.AsString() << std::endl;
         std::cout << std::fixed << std::setprecision(2);
         std::cout << "Amount: $" << purchasedAmount << ", Repaid: $" << repaidAmount << std::endl;
     }
 
     std::vector<Loan> CalendarYearSplit() {
-
+        return std::vector<Loan>{};
     };
 };
 

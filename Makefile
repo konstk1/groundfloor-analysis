@@ -19,13 +19,19 @@ else
 NO_ECHO := @
 endif
 
--include $(DEPENDS)
-
 all: $(SRC_FILES) $(EXEC)
+
+run: $(EXEC)
+	$(NO_ECHO) $(OBJ_DIR)/$(EXEC)
+
+clean:
+	rm -r $(OBJ_DIR)
 
 $(EXEC): $(OBJ_DIR) $(OBJ_FILES)
 	@echo Linking: $(notdir $@)
 	$(NO_ECHO) $(CXX) $(LDFLAGS) $(OBJ_FILES) -o $(OBJ_DIR)/$@
+
+-include $(DEPENDS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo Compiling: $(notdir $@)
@@ -34,11 +40,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 $(OBJ_DIR):
 	$(NO_ECHO) mkdir $@
 
-run: $(EXEC)
-	$(NO_ECHO) $(OBJ_DIR)/$(EXEC)
 
-clean:
-	rm -r $(OBJ_DIR)
 
 print-%  : ; @echo $* = $($*)
 

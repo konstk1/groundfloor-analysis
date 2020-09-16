@@ -32,9 +32,10 @@ void dateTest() {
 }
 
 int main() {
-    Portfolio p;
+    GfParser parser("groundfloor_investments_09142020-163244.csv");
+    Portfolio p(parser);
 
-    p.LoadFromCsv("groundfloor_investments_09142020-163244.csv");
+    p.LoansByYear();
 
     return 0;
 }

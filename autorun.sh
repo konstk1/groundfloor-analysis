@@ -15,7 +15,7 @@ while read filename event ftype; do
     make_result=$?
     echo -e "${NC}"
     if [[ $make_result == 0 ]] ; then 
-      _build/cpp-playground
+      _build/groundfloor
     fi
   fi
 done
