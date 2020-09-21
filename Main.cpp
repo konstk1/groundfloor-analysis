@@ -19,6 +19,9 @@ void loanTest() {
     loan.maturityDate = Date("7/6/2020");
     loan.repaidDate = Date("7/1/2020");
 
+    loan.purchasedAmount = 100;
+    loan.repaidAmount = 115;
+
     loan.Print();
 }
 
@@ -37,7 +40,8 @@ int main() {
 
     p.LoansByYear();
 
-    p.GenerateXirrFile("xirr.csv");
+    // p.GenerateXirrFile("xirr.csv");
+    // loanTest();
 
     return 0;
 }

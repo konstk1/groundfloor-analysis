@@ -36,7 +36,7 @@ struct Date {
         return year > 1900;
     };
 
-    int DaysSince(Date &date) const {
+    int DaysSince(const Date &date) const {
         struct tm start = {0, 0, 0, date.day, date.mon - 1, date.year - 1900};
         struct tm end = {0, 0, 0, day, mon - 1, year - 1900};
 
@@ -153,6 +153,10 @@ struct Loan {
         return repaidDate.IsValid();
     }
 
+    int DurationDays() const {
+        return repaidDate.DaysSince(purchasedDate);
+    }
+
     float ReturnNet() const {
         return repaidDate.IsValid() ? repaidAmount - purchasedAmount : 0.0;
     };
@@ -161,13 +165,18 @@ struct Loan {
         return ReturnNet() / purchasedAmount * 100.0;
     };
 
+    float ReturnPctAnnualized() const {
+        return ReturnPct() * (365.0 / DurationDays());
+    }
+
     void Print() const {
         std::cout << "Loan: " << title << std::endl;
         std::cout << address.street << ", " << address.city << ", " << address.state << ", " << address.zipcode << std::endl;
         std::cout << "Grade: " << grade << ", Term: " << term << ", Rate: " << rate << "%, ARV: " << arvPct << "%" << std::endl;
         std::cout << "Purchased: " << purchasedDate.AsString() << ", Maturity: " << maturityDate.AsString() << ", Repaid: " << repaidDate.AsString() << std::endl;
         std::cout << std::fixed << std::setprecision(2);
-        std::cout << "Amount: $" << purchasedAmount << ", Repaid: $" << repaidAmount << std::endl;
+        std::cout << "Amount: $" << purchasedAmount << ", Repaid: $" << repaidAmount 
+                  << " (" << ReturnPct() << "%, Annual: " << ReturnPctAnnualized() << "%)" <<  std::endl;
     }
 
     std::vector<Loan> CalendarYearSplit() {

@@ -9,25 +9,36 @@
 #include "Portfolio.hpp"
 
 struct AggregateStats {
-    int numLoans = 0;
+    int numRepaidLoans = 0;
+    int numUnrepaidLoans = 0;
     float totalPurchasedAmount = 0;
     float totalRepaidAmount = 0;
+    int totalDurationDays = 0;
+
+    float returnPctAnnualized = 0.0;
 
     float ReturnPct() const {
         return (totalRepaidAmount / totalPurchasedAmount - 1) * 100.0;
     };
 
+    float DurationAvg() const {
+        return static_cast<float>(totalDurationDays) / numRepaidLoans;
+    }
 };
 
 static void UpdateAggregateStats(AggregateStats &stats, const Loan &loan) {
     // only include repaid loans, skip unrepaid
     if (!loan.IsRepaid()) {
+        stats.numUnrepaidLoans += 1;
         return;
     }
 
-    stats.numLoans += 1;
+    stats.returnPctAnnualized = (stats.totalPurchasedAmount * stats.returnPctAnnualized + loan.purchasedAmount * loan.ReturnPctAnnualized()) / (stats.totalPurchasedAmount + loan.purchasedAmount);
+
+    stats.numRepaidLoans += 1;
     stats.totalPurchasedAmount += loan.purchasedAmount;
     stats.totalRepaidAmount += loan.repaidAmount;
+    stats.totalDurationDays += loan.DurationDays();
 }
 
 void Portfolio::LoansByYear() {
@@ -43,7 +54,10 @@ void Portfolio::LoansByYear() {
     for (const auto &it: yearStats) {
         auto year = it.first;
         auto stats = it.second;
-        std::cout << year << "\t#: " << std::setw(2) << stats.numLoans << "\t $" << std::setw(5) << stats.totalPurchasedAmount << " ("<< stats.ReturnPct() << "%)" << std::endl;
+        std::cout << std::fixed << std::setprecision(2)
+                  << year << "\t#: " << std::setw(2) << stats.numRepaidLoans << " / " << std::setw(3) << stats.numUnrepaidLoans << "\t $" << std::setw(5) << static_cast<int>(stats.totalPurchasedAmount)
+                  << " ("<< stats.ReturnPct() << "%, annual " << stats.returnPctAnnualized << "%)"
+                  << " (" << std::setw(3) << static_cast<int>(stats.DurationAvg()) << " days)" <<  std::endl;
     }
 }
 
