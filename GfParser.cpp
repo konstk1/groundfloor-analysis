@@ -85,7 +85,9 @@ static Loan::PerfState PerfStateFromString(const std::string &str) {
 }
 
 static Loan::LoanState LoanStateFromString(const std::string &str) {
-    if (str.compare("Funded") == 0) {
+    if (str.compare("Funding") == 0) {
+        return Loan::LoanState::FUNDING;
+    } else if (str.compare("Funded") == 0) {
         return Loan::LoanState::FUNDED;
     } else if (str.compare("Refunded") == 0) {
         return Loan::LoanState::REFUNDED;

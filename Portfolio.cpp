@@ -55,7 +55,7 @@ void Portfolio::LoansByYear() {
         auto year = it.first;
         auto stats = it.second;
         std::cout << std::fixed << std::setprecision(2)
-                  << year << "\t#: " << std::setw(2) << stats.numRepaidLoans << " / " << std::setw(3) << stats.numUnrepaidLoans << "\t $" << std::setw(5) << static_cast<int>(stats.totalPurchasedAmount)
+                  << year << "\t#: " << std::setw(3) << stats.numRepaidLoans << " / " << std::setw(3) << stats.numUnrepaidLoans << "\t $" << std::setw(5) << static_cast<int>(stats.totalPurchasedAmount)
                   << " ("<< stats.ReturnPct() << "%, annual " << stats.returnPctAnnualized << "%)"
                   << " (" << std::setw(3) << static_cast<int>(stats.DurationAvg()) << " days)" <<  std::endl;
     }

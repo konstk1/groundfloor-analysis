@@ -120,6 +120,7 @@ struct Loan {
 
     enum class LoanState {
         UNKNOWN,
+        FUNDING,
         FUNDED,
         REPAID,
         REFUNDED,
