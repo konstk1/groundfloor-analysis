@@ -23,3 +23,16 @@ std::vector<Transaction> Loan::GetTransactions() const {
 
     return transactions;
 };
+
+static const std::vector<std::string> PerfStateNames = {
+    "Unknown",
+    "Performing",
+    "Performed",
+    "Extended",
+    "Refunded",
+    "Defaulted",
+};
+
+std::string PerfStateToString(Loan::PerfState state) {
+    return PerfStateNames[static_cast<int>(state)];
+}

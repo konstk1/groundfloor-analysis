@@ -39,6 +39,8 @@ int main() {
     Portfolio p(parser);
 
     p.LoansByYear();
+    p.LoansByGrade();
+    p.LoansByPerfState();
 
     // p.GenerateXirrFile("xirr.csv");
     // loanTest();

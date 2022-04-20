@@ -65,7 +65,12 @@
         "iomanip": "cpp",
         "stack": "cpp",
         "__tree": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "__bits": "cpp",
+        "clocale": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "variant": "cpp"
     },
     "cSpell.words": [
         "Xirr",

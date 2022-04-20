@@ -8,24 +8,6 @@
 #include "Loan.hpp"
 #include "Portfolio.hpp"
 
-struct AggregateStats {
-    int numRepaidLoans = 0;
-    int numUnrepaidLoans = 0;
-    float totalPurchasedAmount = 0;
-    float totalRepaidAmount = 0;
-    int totalDurationDays = 0;
-
-    float returnPctAnnualized = 0.0;
-
-    float ReturnPct() const {
-        return (totalRepaidAmount / totalPurchasedAmount - 1) * 100.0;
-    };
-
-    float DurationAvg() const {
-        return static_cast<float>(totalDurationDays) / numRepaidLoans;
-    }
-};
-
 static void UpdateAggregateStats(AggregateStats &stats, const Loan &loan) {
     // only include repaid loans, skip unrepaid
     if (!loan.IsRepaid()) {
@@ -42,20 +24,51 @@ static void UpdateAggregateStats(AggregateStats &stats, const Loan &loan) {
 }
 
 void Portfolio::LoansByYear() {
-    std::map<int, AggregateStats> yearStats;
+    std::map<int, AggregateStats> aggrStats;
 
-    std::cout << "Loans by purchase year (repaid/unrepaid): " << std::endl;
+    std::cout << std::endl << "Loans by purchase year (repaid/unrepaid): " << std::endl;
     for (const auto &loan: mLoans) {
         auto year = loan.purchasedDate.year;
-        auto &stats = yearStats[year];   // will create blank stats if doesn't exist
+        auto &stats = aggrStats[year];   // will create blank stats if doesn't exist
         UpdateAggregateStats(stats, loan);
     }
 
-    for (const auto &it: yearStats) {
-        auto year = it.first;
+    PrintStats(aggrStats);
+}
+
+void Portfolio::LoansByGrade() {
+    std::map<std::string, AggregateStats> aggrStats;
+
+    std::cout << std::endl << "Loans by Grade (repaid/unrepaid): " << std::endl;
+    for (const auto &loan: mLoans) {
+        auto grade = loan.grade;
+        auto &stats = aggrStats[grade];   // will create blank stats if doesn't exist
+        UpdateAggregateStats(stats, loan);
+    }
+
+    PrintStats(aggrStats);
+}
+
+void Portfolio::LoansByPerfState() {
+    std::map<std::string, AggregateStats> aggrStats;
+
+    std::cout << std::endl << "Loans by Performance State (repaid/unrepaid): " << std::endl;
+    for (const auto &loan: mLoans) {
+        auto perfState = PerfStateToString(loan.perfState);
+        auto &stats = aggrStats[perfState];   // will create blank stats if doesn't exist
+        UpdateAggregateStats(stats, loan);
+    }
+
+    PrintStats(aggrStats);
+}
+
+template <typename T>
+void Portfolio::PrintStats(std::map<T, AggregateStats> &aggregateStats) {
+    for (const auto &it: aggregateStats) {
+        auto key = it.first;
         auto stats = it.second;
         std::cout << std::fixed << std::setprecision(2)
-                  << year << "\t#: " << std::setw(3) << stats.numRepaidLoans << " / " << std::setw(3) << stats.numUnrepaidLoans << "\t $" << std::setw(5) << static_cast<int>(stats.totalPurchasedAmount)
+                  << key << "\t#: " << std::setw(3) << stats.numRepaidLoans << " / " << std::setw(3) << stats.numUnrepaidLoans << "\t $" << std::setw(5) << static_cast<int>(stats.totalPurchasedAmount)
                   << " ("<< stats.ReturnPct() << "%, annual " << stats.returnPctAnnualized << "%)"
                   << " (" << std::setw(3) << static_cast<int>(stats.DurationAvg()) << " days)" <<  std::endl;
     }

@@ -178,4 +178,6 @@ struct Loan {
     std::vector<Transaction> GetTransactions() const;
 };
 
+std::string PerfStateToString(Loan::PerfState state);
+
 #endif
