@@ -44,7 +44,7 @@ static void UpdateAggregateStats(AggregateStats &stats, const Loan &loan) {
 void Portfolio::LoansByYear() {
     std::map<int, AggregateStats> yearStats;
 
-    std::cout << "Loans by year: " << std::endl;
+    std::cout << "Loans by purchase year (repaid/unrepaid): " << std::endl;
     for (const auto &loan: mLoans) {
         auto year = loan.purchasedDate.year;
         auto &stats = yearStats[year];   // will create blank stats if doesn't exist

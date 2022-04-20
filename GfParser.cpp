@@ -188,8 +188,13 @@ int GfParser::LoadFromCsv(const std::string &filePath, std::vector<Loan> &loans)
             tokens.push_back(token);
         }
 
-        loans.push_back(ProcessLoanRow(tokens));
-        numLoans++;
+        try {
+            loans.push_back(ProcessLoanRow(tokens));
+            numLoans++;
+        } catch (std::exception &e) {
+            std::cerr << "Error processing loan " << numLoans+1 << ": " << e.what() << std::endl;
+            exit(-1);
+        }
     }
 
     fin.close();
